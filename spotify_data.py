@@ -115,9 +115,7 @@ def create_urilist(token, songlist, number):
 
     for song in songlist:
         song_uri = search_track(token, song['name'], song['artist'], number);
-        if song_uri == 0 or song_uri == "":
-            pass;
-        else:
+        if song_uri not in [0, ""]:
             uris.append(song_uri);
 
     return uris;
