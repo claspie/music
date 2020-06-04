@@ -68,11 +68,10 @@ def fast_scrape(weeks):
                 try:
                     song = bs_data[index].find("div").find("a").get_text();
                     artist = bs_data[index].find("div").next_sibling.get_text();
-                    track = {
-                        "song": song,
-                        "artist": artist
-                    }
-                    return track;
+                    return {
+                                "song": song,
+                                "artist": artist
+                            };
                 except Exception as error:
                     pass
                     
