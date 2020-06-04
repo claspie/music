@@ -13,6 +13,7 @@ def scrape(weeks):
     date_list = [spec_date]
     chart = [];
 
+    # needs list comprehension to make faster
     for x in range(1, weeks + 1):
         if x <= weeks:
             new = spec_date + TimeDelta(delta)
