@@ -10,26 +10,23 @@ from db import fetch, insert;
 def scrape(weeks):
     spec_date = DateTime(2002, 12, 8);
     delta = 7;
-    date_list = []; date_list.append(spec_date);
-    x = 1;
+    date_list = [spec_date]
     chart = [];
 
-    while x <= weeks:
+    for x in range(1, weeks + 1):
         if x <= weeks:
             new = spec_date + TimeDelta(delta)
             date_list.append(new);
             spec_date = new
-        x += 1;
-
     for date in date_list:
         url = "https://top40-charts.com/chart.php?cid=25&date=" + date.strftime('%Y-%m-%d')
-    
-        
+
+
 
         website = bs(get(url).text, 'html.parser');
         chart_songs = website.find_all("tr", "latc_song")
 
-        for i in range(0, 40):
+        for i in range(40):
             try:
                 song = chart_songs[i].find("div").find("a").get_text();
                 artist = chart_songs[i].find("div").next_sibling.get_text();
@@ -40,7 +37,7 @@ def scrape(weeks):
                 chart.append(track)
             except Exception as error:
                 print(error)
-            
+
     return chart;
 
 
