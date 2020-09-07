@@ -12,7 +12,7 @@ mydb = dbm.connect(
 def fetch(*args):
     if len(args) == 0:
         try:
-            query = f"SELECT DISTINCT songname, artistname FROM charts.uksongs;"
+            query = f"SELECT DISTINCT songname, artistname FROM charts.songs;"
             cursor = mydb.cursor()
 
             cursor.execute(query)
@@ -33,7 +33,7 @@ def fetch(*args):
 
     elif len(args) == 1:
         try:
-            query = f"SELECT DISTINCT songname, artistname FROM charts.uksongs LIMIT {int(args[0])};"
+            query = f"SELECT DISTINCT songname, artistname FROM charts.songs LIMIT {int(args[0])};"
             cursor = mydb.cursor()
             cursor.execute(query)
             result = cursor.fetchall()
@@ -58,7 +58,7 @@ def insert(song, artist):
     try:
         songname = str(song)
         artistname = str(artist)
-        query = f'''INSERT INTO charts.uksongs (songname, artistname)
+        query = f'''INSERT INTO charts.songs (songname, artistname)
             VALUES ("{songname}", "{artistname}");'''
         cursor = mydb.cursor()
         cursor.execute(query)

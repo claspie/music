@@ -8,9 +8,9 @@ With the database data, it creates a playlist on Spotify.
 <ul>Moving this to a production environment, all of this including the server framework would be async</ul>
 
 #### Setup
-<ul>Add database variables in the db.py file inside the keys directory</ul>
 <ul>Add your Spotify Client ID and Secret using the Keyring "set_password" method</ul>
 
 #### Running Project
-<ul>Edit scraper.py to change the first chart you want to collect and the number of charts you want, the charts are weekly</ul>
+<ul>Edit scraper.py to change the starting point and the number of charts you want, the charts are weekly</ul>
+<ul>Start docker-compose</ul>
 
