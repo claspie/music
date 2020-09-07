@@ -1,33 +1,32 @@
 import mysql.connector as dbm
-from json import loads, dumps;
-from keys.db import host, user, password, db, port;
-
+from keys.db import host, user, password, db, port
 
 mydb = dbm.connect(
-    host = host,
-    user = user,
-    passwd = password,
-    database = db
+    host=host,
+    user=user,
+    passwd=password,
+    database=db
 )
+
 
 def fetch(*args):
     if len(args) == 0:
         try:
             query = f"SELECT DISTINCT songname, artistname FROM charts.uksongs;"
             cursor = mydb.cursor()
-            
+
             cursor.execute(query)
             result = cursor.fetchall()
-            
-            table = [];
+
+            table = []
             for row in result:
                 results = {
                     "name": row[0],
                     "artist": row[1]
                 }
                 table.append(results)
-            #mydb.close()
-            return table;
+            mydb.close()
+            return table
 
         except Exception as error:
             print(error)
@@ -38,23 +37,19 @@ def fetch(*args):
             cursor = mydb.cursor()
             cursor.execute(query)
             result = cursor.fetchall()
-            
-            table = [];
+
+            table = []
             for row in result:
                 results = {
                     "name": row[0],
                     "artist": row[1]
                 }
                 table.append(results)
-            #cursor.close()
-            #mydb.close()
-            return table;
+            mydb.close()
+            return table
 
         except Exception as error:
             print(error)
-
-    else:
-        pass;
 
 
 def insert(song, artist):
@@ -65,20 +60,16 @@ def insert(song, artist):
             VALUES ("{songname}", "{artistname}");'''
         cursor = mydb.cursor()
         cursor.execute(query)
-        #cursor.close()
+
         mydb.commit()
-        #mydb.close()
+        mydb.close()
 
         print("row added")
     except Exception as error:
         print(error)
-        mydb.rollback();
-        #mydb.close()
-        pass
-
+        mydb.rollback()
 
 
 if __name__ == "__main__":
     songs = fetch()
     print(len(songs))
-    pass;

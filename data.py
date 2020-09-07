@@ -1,15 +1,15 @@
-from flask import Flask, jsonify, redirect, request
-from auth import app_auth, user_auth
-import mysql.connector, keys.dbm as dbm
+import keys.db as dbm
+import mysql.connector
 
 mydb = mysql.connector.connect(
-    host = dbm.host,
-    user = dbm.user,
-    passwd = dbm.password,
-    database = dbm.db
+    host=dbm.host,
+    user=dbm.user,
+    passwd=dbm.password,
+    database=dbm.db
 )
 
-def Fetch_Songs():
+
+def fetch_songs():
     mycursor = mydb.cursor()
 
     mycursor.execute("SHOW TABLES")
@@ -19,7 +19,6 @@ def Fetch_Songs():
     for line in mycursor.fetchall():
         table_chart.append(line[0])
 
-    song_table = {}
     songs = {}
     for year in table_chart:
         song_select = f"SELECT title, artist FROM {year};"
@@ -29,3 +28,7 @@ def Fetch_Songs():
     mycursor.close()
     mydb.close()
     return songs
+
+
+if __name__ == "main":
+    pass

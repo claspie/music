@@ -1,101 +1,61 @@
-from requests import get;
-from bs4 import BeautifulSoup as bs;
-from time import sleep, time;
-from datetime import datetime as DateTime, timedelta as TimeDelta;
-from threading import Thread;
-from multiprocessing.pool import ThreadPool;
-from db import fetch, insert;
+from requests import get
+from bs4 import BeautifulSoup as bs
+from time import time
+from datetime import datetime as DateTime, timedelta as TimeDelta
+from db import fetch, insert
 
 
 def scrape(weeks):
-    spec_date = DateTime(2002, 12, 8);
-    delta = 7;
+    """
+    Creating a list of dates for the charts
+    """
+    spec_date = DateTime(2002, 12, 8)
+    delta = 7
     date_list = [spec_date]
-    chart = [];
-
-    # needs list comprehension to make faster
-    for x in range(1, weeks + 1):
-        if x <= weeks:
-            new = spec_date + TimeDelta(delta)
-            date_list.append(new);
-            spec_date = new
-    for date in date_list:
-        url = "https://top40-charts.com/chart.php?cid=25&date=" + date.strftime('%Y-%m-%d')
-
-
-
-        website = bs(get(url).text, 'html.parser');
-        chart_songs = website.find_all("tr", "latc_song")
-
-        for i in range(40):
-            try:
-                song = chart_songs[i].find("div").find("a").get_text();
-                artist = chart_songs[i].find("div").next_sibling.get_text();
-                track = {
-                    "song": song,
-                    "artist": artist
-                }
-                chart.append(track)
-            except Exception as error:
-                print(error)
-
-    return chart;
-
-
-def fast_scrape(weeks):
-    spec_date = DateTime(2002, 12, 8);
-    delta = 7;
-    date_list = []; date_list.append(spec_date);
-    x = 1;
-    #chart = [];
+    x = 1
+    # chart = [];
 
     while x <= weeks:
         if x <= weeks:
             new = spec_date + TimeDelta(delta)
-            date_list.append(new);
+            date_list.append(new)
             spec_date = new
-        x += 1;
+        x += 1
+    """
+    Use the dates in the list of dates generated to scrape the webpages
+    """
+    for date in date_list:
+        url = "https://top40-charts.com/chart.php?cid=25&date=" + date.strftime('%Y-%m-%d')
 
-    with ThreadPool(processes=80) as first_thread:
-        for date in date_list:
-            url = "https://top40-charts.com/chart.php?cid=25&date=" + date.strftime('%Y-%m-%d')
-    
-        
+        website = bs(get(url).text, 'html.parser')
+        chart_songs = website.find_all("tr", "latc_song")
 
-            website = bs(get(url).text, 'html.parser');
-            chart_songs = website.find_all("tr", "latc_song")
+        def gen_track(index, bs_data):
+            try:
+                song = bs_data[index].find("div").find("a").get_text()
+                artist = bs_data[index].find("div").next_sibling.get_text()
+                return {
+                    "song": song,
+                    "artist": artist
+                }
+            except Exception as e:
+                print(e)
 
-            def gen_track(index, bs_data):
-                try:
-                    song = bs_data[index].find("div").find("a").get_text();
-                    artist = bs_data[index].find("div").next_sibling.get_text();
-                    return {
-                                "song": song,
-                                "artist": artist
-                            };
-                except Exception as error:
-                    pass
-                    
-            for i in range(0, 40):
-                
-                track_song = gen_track(i, chart_songs)
-                
-                insert(track_song["song"], track_song["artist"])
+        for i in range(0, 40):
+            track_song = gen_track(i, chart_songs)
 
-            print("Done for ", date.strftime('%Y-%m-%d'))
-        print("Done for ", date.strftime('%Y-%m-%d'))
-            
-    return "done";
+            insert(track_song["song"], track_song["artist"])
+
+    return "done"
 
 
 if __name__ == "__main__":
-
     try:
-        pool = ThreadPool(processes=1);
-        start_time = time();
-        result = pool.apply_async(fast_scrape, (450, ))
-        data = result.get()
-        print(len(data))
+        """
+        Enter number of weeks, in this case 100
+        """
+        start_time = time()
+        result = scrape(100)
         print(time() - start_time, " seconds")
     except Exception as error:
         print(error)
