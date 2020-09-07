@@ -1,12 +1,9 @@
-import keys.keys as key;
-from requests import get, post;
-from base64 import b64encode;
-import json;
+from requests import post
+import keyring
 
 
-
-CLIENT_ID = key.CLIENT_ID;
-CLIENT_SECRET = key.CLIENT_SECRET;
+CLIENT_ID = keyring.get_password('spotify', 'id')
+CLIENT_SECRET = keyring.get_password('spotify', 'password')
 
 # Spotify URLs
 AUTH_URL = "https://accounts.spotify.com/authorize"
@@ -31,6 +28,7 @@ scope_list = [
     "playlist-modify-private"
 ]
 
+
 def app_auth():
     payload = {
         "client_id": CLIENT_ID,
@@ -39,25 +37,25 @@ def app_auth():
         "show_dialog": SHOW_DIALOG,
         "scope": "%20".join(scope_list)
     }
-    url_args = "&".join(["{}={}".format(key,val) for key,val in payload.items()]);
-    auth_url = "{}?{}".format(AUTH_URL, url_args);
-    return auth_url
+    url_args = "&".join(["{}={}".format(key, val) for key, val in payload.items()])
+    return "{}?{}".format(AUTH_URL, url_args)
+
 
 def auth_token(auth_code):
     authorization = "authorization_code"
     payload = f"grant_type={authorization}&code={auth_code}&redirect_uri={REDIRECT_URI}&client_id={CLIENT_ID}&client_secret={CLIENT_SECRET}"
     headers = {
-    'Content-Type': "application/x-www-form-urlencoded",
-    'User-Agent': "PostmanRuntime/7.19.0",
-    'Accept': "*/*",
-    'Cache-Control': "no-cache",
-    'Postman-Token': "6b67aeff-edee-4ec9-a8f7-760795dc0eb4,4edd2f07-51e8-44b7-ba24-401234015d1d",
-    'Host': "accounts.spotify.com",
-    'Accept-Encoding': "gzip, deflate",
-    'Content-Length': "559",
-    'Cookie': "__Host-device_id=AQBHkK7kaZY3YBMD1L22KIwrdbhLjuwgzT8D8ktrtpBOkKaLrXcJRsmgJic1vxA-hPSSnzGARX9w1ATULVPBlp2j4tNTFUaWTQc; csrf_token=AQDQxVGL1VEWW4SxLKSoPUx7TGb7Hr69FEnR5rL59EByCi24UJpZTqj4vSYAst_kuavSH5jwG73D_rYU",
-    'Connection': "keep-alive",
-    'cache-control': "no-cache"
+        'Content-Type': "application/x-www-form-urlencoded",
+        'User-Agent': "PostmanRuntime/7.19.0",
+        'Accept': "*/*",
+        'Cache-Control': "no-cache",
+        'Postman-Token': "6b67aeff-edee-4ec9-a8f7-760795dc0eb4,4edd2f07-51e8-44b7-ba24-401234015d1d",
+        'Host': "accounts.spotify.com",
+        'Accept-Encoding': "gzip, deflate",
+        'Content-Length': "559",
+        'Cookie': "__Host-device_id=AQBHkK7kaZY3YBMD1L22KIwrdbhLjuwgzT8D8ktrtpBOkKaLrXcJRsmgJic1vxA-hPSSnzGARX9w1ATULVPBlp2j4tNTFUaWTQc; csrf_token=AQDQxVGL1VEWW4SxLKSoPUx7TGb7Hr69FEnR5rL59EByCi24UJpZTqj4vSYAst_kuavSH5jwG73D_rYU",
+        'Connection': "keep-alive",
+        'cache-control': "no-cache"
     }
     data = post(TOKEN_URL, data=payload, headers=headers)
-    return data.text;
+    return data.text

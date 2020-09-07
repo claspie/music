@@ -50,6 +50,8 @@ def fetch(*args):
 
         except Exception as error:
             print(error)
+    else:
+        return None
 
 
 def insert(song, artist):

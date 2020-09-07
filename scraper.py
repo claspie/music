@@ -2,7 +2,7 @@ from requests import get
 from bs4 import BeautifulSoup as bs
 from time import time
 from datetime import datetime as DateTime, timedelta as TimeDelta
-from db import fetch, insert
+from db import insert
 
 
 def scrape(weeks):

@@ -1,5 +1,5 @@
-host = "104.198.13.82"
-user = "fpl"
-password = "byjMJo8mr3XMBgSY"
+host = ""
+user = ""
+password = ""
 db = "charts"
 port = 3306

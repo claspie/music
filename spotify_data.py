@@ -122,8 +122,11 @@ def create_urilist(token, songlist, number):
     return uris
 
 
-def add_to_playlist(token, song_name, artist, limit_number, playlist_id):
+def add_to_playlist(token, song_name, artist, limit_number: int, playlist_id):
     track_uri = search_track(token, song_name, artist, limit_number)
+    """
+    If song not found on Spotify, add to a json file, else add it the playlist
+    """
     if type(track_uri) is int:
         nsong = {
             "song": song_name,
